@@ -1,0 +1,31 @@
+name: Tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  tests:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - run: pipx install poetry
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "poetry"
+      - run: poetry install --with build --without dev
+      # - run: poetry run # TODO: Add tests here
+      - name: Check packaging
+        run: |
+          echo "Building packages"
+          poetry build
+          echo "Validating packages"
+          poetry run twine check dist/*
+          echo "Packages build and valdiate successfully."
