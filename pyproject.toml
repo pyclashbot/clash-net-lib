@@ -38,7 +38,7 @@ optional = true
 
 
 [tool.poetry.group.build.dependencies]
-twine = ">=4.0.2,<6.0.0"
+twine = "^5"
 
 
 [tool.ruff.lint]
