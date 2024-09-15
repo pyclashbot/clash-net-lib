@@ -3,6 +3,8 @@
 This module provides high-level classes for handling a decision-making process.
 """
 
+from __future__ import annotations
+
 from typing import TypeVar
 
 DecisionName = str
@@ -40,7 +42,7 @@ class DecisionInput[DecisionInputValue]:
             str: The name and value of the decision input.
 
         """
-        return self.name + " : " + str(self.value)
+        return f"{self.name} : {self.value!s}"
 
     def __repr__(self) -> str:
         """Return the official string representation of the DecisionInput.
@@ -83,7 +85,7 @@ class Decision[DecisionValue]:
             str: The name and value of the decision.
 
         """
-        return self.name + " : " + str(self.value)
+        return f"{self.name} : {self.value!s}"
 
     def __repr__(self) -> str:
         """Return the official string representation of the Decision.
@@ -96,32 +98,32 @@ class Decision[DecisionValue]:
         return self.__str__()
 
 
-class DecisionMaker[DecisionInputValue, DecisionValue]:
+class DecisionMaker[DecisionInput, Decision]:
     """Manages decision inputs and generates decisions.
 
     Attributes
     ----------
-        inputs (list[DecisionInput[DecisionInputValue]]): The list of inputs to the decision-making process.
-        decisions (list[Decision[DecisionValue]]): The list of decisions made.
+        inputs (list[DecisionInput]): The list of inputs to the decision-making process.
+        decisions (list[Decision]): The list of decisions made.
 
     """
 
     def __init__(self) -> None:
         """Initialize a DecisionMaker instance."""
-        self.inputs: list[DecisionInput[DecisionInputValue]] = []
-        self.decisions: list[Decision[DecisionValue]] = []
+        self.inputs: list[DecisionInput] = []
+        self.decisions: list[Decision] = []
 
-    def add_input(self, decision_input: DecisionInput[DecisionInputValue]) -> None:
+    def add_input(self, decision_input: DecisionInput) -> None:
         """Add an input to the decision-making process.
 
         Args:
         ----
-            decision_input (DecisionInput[DecisionInputValue]): The decision input to be added.
+            decision_input (DecisionInput): The decision input to be added.
 
         """
         self.inputs.append(decision_input)
 
-    def make_decision(self) -> Decision[DecisionValue]:
+    def make_decision(self) -> Decision | None:
         """Generate a decision based on the inputs.
 
         Raises
@@ -130,7 +132,7 @@ class DecisionMaker[DecisionInputValue, DecisionValue]:
 
         Returns
         -------
-            Decision[DecisionValue]: The decision based on the inputs (when implemented).
+            Decision | None: The decision based on the inputs (when implemented).
 
         """
         msg = "make_decision method is not implemented"
