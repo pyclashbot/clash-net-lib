@@ -6,7 +6,7 @@ from typing import TypedDict
 
 import numpy as np
 
-from src.decision_maker import Decision, DecisionInput, DecisionMaker
+from clashnetlib.decision_maker import Decision, DecisionInput, DecisionMaker
 
 FightDecisionInputValue = np.ndarray
 
