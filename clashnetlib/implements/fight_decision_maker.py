@@ -48,7 +48,7 @@ class FightDecision(Decision[FightDecisionValue]):
         super().__init__(name, value)
 
 
-class FightDecisionMaker(DecisionMaker[FightDecisionInputValue, FightDecisionValue]):
+class FightDecisionMaker(DecisionMaker[FightDecisionInput, FightDecision]):
     """An implementation of the DecisionMaker class for making decisions during a fight."""
 
     def __init__(self) -> None:
