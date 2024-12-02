@@ -39,7 +39,7 @@ optional = true
 
 
 [tool.poetry.group.build.dependencies]
-twine = "^5"
+twine = ">=5,<7"
 
 
 [tool.ruff.lint]
