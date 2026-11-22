@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "clash-net-lib"
-version = "0.1.0"
+version = "0.2.0"
 description = "The public shape contract for the Clash Net Protocol (CNP)"
 readme = "README.md"
 license = { text = "MIT" }
@@ -22,8 +22,9 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
+client = ["websockets>=13,<16"]
 validate = ["jsonschema>=4.23"]
-test = ["pytest>=8.3", "jsonschema>=4.23", "ruff>=0.6"]
+test = ["pytest>=8.3", "jsonschema>=4.23", "ruff>=0.6", "websockets>=13,<16"]
 
 [project.scripts]
 clashnet-conformance = "clashnet.conformance:main"

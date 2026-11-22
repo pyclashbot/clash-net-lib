@@ -8,19 +8,19 @@ inference runtime: no transport, no models, no auth, no game logic.
 
 - Normative contract: [CONTRACT.md](CONTRACT.md)
 - Protocol name: **Clash Net Protocol (CNP)**
-- Version: `0.1.0`
+- Version: `0.2.0`
 - State schema: `1.1`
 - License: MIT
 
 ## Status
 
-`0.1.0` is the first shape-only release. It contains JSON Schema, Python types,
-`Vision`/`Policy` Protocols, a fixture vocabulary, and a conformance CLI. Bindings and
-adapters land in consumer repositories (`py-clash-bot` and others).
+`0.2.0` adds the optional reference WebSocket client (`clashnet.client`). The core is
+still shape-only: JSON Schema, Python types, `Vision`/`Policy` Protocols, a fixture
+vocabulary, and a conformance CLI. Consumer adapters live in consumer repositories.
 
 ## Install
 
-`0.1.0` is not on PyPI yet. From this repository:
+`0.2.0` is not on PyPI yet. From this repository:
 
 ```bash
 uv sync --extra test
@@ -32,6 +32,7 @@ When published:
 ```bash
 pip install clash-net-lib             # types + Protocols only
 pip install 'clash-net-lib[validate]' # + JSON Schema validation
+pip install 'clash-net-lib[client]'   # + reference WebSocket client
 ```
 
 Python 3.12+.
@@ -53,6 +54,27 @@ clashnet-conformance
 clashnet-conformance --json
 ```
 
+## Client
+
+The reference client is a thin synchronous WebSocket binding: `hello`/`hello_ack`,
+framing, base64, 30 KB fragmentation, `seq` correlation, and reconnect. It contains no
+capture, game logic, or model code.
+
+```python
+from clashnet.client import Client
+
+with Client("wss://example/ws", consent_training=False) as client:
+    play = client.decide(jpeg_bytes, w=419, h=633)
+    action = play["play"]
+
+# streaming (non-blocking send + poll)
+client = Client("wss://example/ws", consent_training=False)
+client.connect()
+client.send_frame(jpeg_bytes, w=419, h=633, seq=1, want=("state", "play"))
+message = client.poll(timeout=0.5)
+client.close()
+```
+
 ## Layout
 
 ```
@@ -64,7 +86,8 @@ src/clashnet/schema/         JSON Schema (source of truth)
 src/clashnet/fixtures/       golden / degenerate / action / envelope fixtures
 src/clashnet/validate.py     lazy jsonschema validation
 src/clashnet/conformance.py  fixture conformance CLI
-tests/                       schema + fixture + conformance tests
+src/clashnet/client.py       optional reference WebSocket client
+tests/                       schema + fixture + client tests
 ```
 
 ## Compatibility
