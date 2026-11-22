@@ -46,6 +46,9 @@ __all__ = [
     "build_frame",
     "build_hello",
     "chunk_text",
+    "connect",
+    "decide",
+    "infer",
 ]
 
 
@@ -178,7 +181,8 @@ class Client:
         self._seq = itertools.count(1)
 
     def __enter__(self) -> Client:
-        self.connect()
+        if not self.connected:
+            self.connect()
         return self
 
     def __exit__(self, *exc: object) -> None:
@@ -491,3 +495,66 @@ class Client:
         with self._cv:
             self._rx.append(message)
             self._cv.notify_all()
+
+
+def connect(url: str, **client_kwargs: Any) -> Client:
+    """Create a client and complete the ``hello`` handshake."""
+    client = Client(url, **client_kwargs)
+    client.connect()
+    return client
+
+
+def infer(
+    url: str,
+    image: bytes,
+    *,
+    w: int,
+    h: int,
+    seq: int | None = None,
+    timeout: float | None = None,
+    image_format: ImageFormat = "jpeg",
+    frame_ts: int | None = None,
+    fight_id: str | None = None,
+    consent_training: bool | None = None,
+    **client_kwargs: Any,
+) -> StateMessage:
+    """One-shot convenience: connect, send one frame, return the ``state`` message."""
+    with connect(url, consent_training=consent_training, **client_kwargs) as client:
+        return client.infer(
+            image,
+            w=w,
+            h=h,
+            seq=seq,
+            timeout=timeout,
+            image_format=image_format,
+            frame_ts=frame_ts,
+            fight_id=fight_id,
+        )
+
+
+def decide(
+    url: str,
+    image: bytes,
+    *,
+    w: int,
+    h: int,
+    seq: int | None = None,
+    timeout: float | None = None,
+    image_format: ImageFormat = "jpeg",
+    frame_ts: int | None = None,
+    fight_id: str | None = None,
+    consent_training: bool | None = None,
+    **client_kwargs: Any,
+) -> PlayMessage:
+    """One-shot convenience: connect, send one frame, return the ``play`` message."""
+    with connect(url, consent_training=consent_training, **client_kwargs) as client:
+        return client.decide(
+            image,
+            w=w,
+            h=h,
+            seq=seq,
+            timeout=timeout,
+            image_format=image_format,
+            frame_ts=frame_ts,
+            fight_id=fight_id,
+        )

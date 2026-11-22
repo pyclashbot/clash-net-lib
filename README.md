@@ -73,6 +73,12 @@ client.connect()
 client.send_frame(jpeg_bytes, w=419, h=633, seq=1, want=("state", "play"))
 message = client.poll(timeout=0.5)
 client.close()
+
+# one-shot helpers
+from clashnet.client import decide, infer
+
+play = decide("wss://example/ws", jpeg_bytes, w=419, h=633, consent_training=False)
+state = infer("wss://example/ws", jpeg_bytes, w=419, h=633)
 ```
 
 ## Layout

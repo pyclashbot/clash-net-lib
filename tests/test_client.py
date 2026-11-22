@@ -21,6 +21,9 @@ from clashnet.client import (
     build_frame,
     build_hello,
     chunk_text,
+    connect,
+    decide,
+    infer,
 )
 from clashnet.validate import validate_envelope
 
@@ -247,3 +250,30 @@ def test_send_frame_before_connect() -> None:
     with pytest.raises(ClientNotConnected):
         client.send_frame(b"jpeg", w=419, h=633, seq=1)
     client.close()
+
+
+def test_connect_helper() -> None:
+    with serve_script() as (url, _):
+        client = connect(url)
+        try:
+            assert client.connected
+            assert client.capabilities == CAPABILITIES
+        finally:
+            client.close()
+
+
+def test_infer_helper() -> None:
+    with serve_script() as (url, received):
+        message = infer(url, b"jpeg", w=419, h=633)
+        assert message["type"] == "state"
+        frame = [item for item in received if item["type"] == "frame"][-1]
+        assert frame["want"] == ["state"]
+
+
+def test_decide_helper_with_consent() -> None:
+    with serve_script() as (url, received):
+        message = decide(url, b"jpeg", w=419, h=633, consent_training=True)
+        assert message["type"] == "play"
+        frame = [item for item in received if item["type"] == "frame"][-1]
+        assert frame["want"] == ["play"]
+        assert frame["consent"] == {"training": True}
