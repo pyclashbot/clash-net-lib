@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.1",
+  "in_fight": true,
+  "image_size": [419, 633],
+  "arena": { "rect_px": [52, 57, 367, 476] },
+  "units": [
+    {
+      "bbox": [136, 397, 182, 448],
+      "center": [159, 422],
+      "center_norm": [0.34, 0.87],
+      "cell": 87,
+      "class": "Skeleton King",
+      "class_conf": 0.53,
+      "side": "friendly",
+      "side_conf": 0.99,
+      "detection_conf": 0.48
+    },
+    {
+      "bbox": [139, 190, 214, 249],
+      "center": [176, 219],
+      "center_norm": [0.39, 0.39],
+      "cell": 42,
+      "class": "Mega Knight",
+      "class_conf": 0.7,
+      "side": "enemy",
+      "side_conf": 0.86,
+      "detection_conf": 0.26
+    }
+  ],
+  "hand_cards": [
+    { "slot": 0, "card": "Snowball", "conf": 0.45, "empty": false, "affordable": true },
+    { "slot": 1, "card": "Hog Rider", "conf": 0.61, "empty": false, "affordable": true },
+    { "slot": 2, "card": "unknown", "conf": 0.0, "empty": true, "affordable": null },
+    { "slot": 3, "card": "Fireball", "conf": 0.58, "empty": false, "affordable": false }
+  ],
+  "elixir": 6.5,
+  "timer": {
+    "seconds_remaining": 161,
+    "mmss": "2:41",
+    "overtime": false,
+    "phase": "regular"
+  },
+  "towers": {
+    "enemy_left": {
+      "status": "destroyed",
+      "health_percent": 0.0,
+      "conf": 0.98,
+      "alive": false
+    },
+    "enemy_right": {
+      "status": "middle",
+      "health_percent": 62.5,
+      "conf": 0.91,
+      "alive": true
+    },
+    "enemy_main": {
+      "status": "full",
+      "health_percent": 100.0,
+      "conf": 0.97,
+      "alive": true
+    },
+    "friendly_left": {
+      "status": "full",
+      "health_percent": 100.0,
+      "conf": 0.99,
+      "alive": true
+    },
+    "friendly_right": {
+      "status": "full",
+      "health_percent": 100.0,
+      "conf": 0.99,
+      "alive": true
+    },
+    "friendly_main": {
+      "status": "full",
+      "health_percent": 100.0,
+      "conf": 0.99,
+      "alive": true
+    }
+  },
+  "summary": {
+    "unit_count": 2,
+    "friendly_units": 1,
+    "enemy_units": 1,
+    "raw_detections": 2,
+    "tower_filtered": 0
+  },
+  "derived": { "advantage": 0.12, "terminal": false, "winner": null },
+  "vocab": { "version": "fixtures-0.1", "hash": "85bc65aa96323350" },
+  "timings": { "total_ms": 120.0 }
+}

@@ -1,0 +1,6 @@
+{
+  "v": "0.1",
+  "type": "hello",
+  "session_id": "01J00000000000000000000000",
+  "client": { "name": "py-clash-bot", "version": "0.0.0" }
+}

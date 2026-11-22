@@ -1,0 +1,7 @@
+{
+  "type": "ability",
+  "card": "Skeleton King",
+  "xy_norm": [0.5, 0.5],
+  "game_s": 120.0,
+  "source": "local-heuristic"
+}

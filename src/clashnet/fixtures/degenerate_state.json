@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.1",
+  "in_fight": false,
+  "image_size": [419, 633],
+  "units": [],
+  "hand_cards": [],
+  "elixir": null,
+  "timer": null,
+  "towers": {
+    "enemy_left": { "status": "unknown", "health_percent": null, "conf": null, "alive": null },
+    "enemy_right": { "status": "unknown", "health_percent": null, "conf": null, "alive": null },
+    "enemy_main": { "status": "unknown", "health_percent": null, "conf": null, "alive": null },
+    "friendly_left": { "status": "unknown", "health_percent": null, "conf": null, "alive": null },
+    "friendly_right": { "status": "unknown", "health_percent": null, "conf": null, "alive": null },
+    "friendly_main": { "status": "unknown", "health_percent": null, "conf": null, "alive": null }
+  }
+}
