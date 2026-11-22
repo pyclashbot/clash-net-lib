@@ -1,8 +1,8 @@
 """Structural Protocols for models and vision backends.
 
-These are ``typing.Protocol`` definitions, not base classes. A private model does not
-import or inherit anything from this package to satisfy them; it only has to expose the
-same shape. This keeps the public contract and private implementations independent.
+These are ``typing.Protocol`` definitions, not base classes. A model implementation does
+not import or inherit anything from this package to satisfy them; it only has to expose
+the same shape. This keeps the public contract and implementations independent.
 """
 
 from __future__ import annotations

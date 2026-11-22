@@ -6,7 +6,7 @@
   "frame": { "formats": ["jpeg", "webp", "png"], "max_bytes": 32768 },
   "max_hz": 3,
   "models": [
-    { "id": "playmaker", "version": "2026-07", "featurizer": "pm-1" }
+    { "id": "policy", "version": "2026-07", "featurizer": "fixture-1" }
   ],
   "retention": { "requires_consent": true }
 }

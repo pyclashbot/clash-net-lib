@@ -6,7 +6,7 @@
   "xy_norm": [0.51, 0.59],
   "cell": 87,
   "game_s": 118.4,
-  "source": "cloud-playmaker",
-  "model": { "id": "playmaker", "version": "2026-07", "featurizer": "pm-1" },
+  "source": "remote-policy",
+  "model": { "id": "policy", "version": "2026-07", "featurizer": "fixture-1" },
   "confidence": 0.42
 }

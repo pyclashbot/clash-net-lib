@@ -1,10 +1,10 @@
 # clash-net-lib
 
-The shared public shape contract for **Clash Net**, **FightVision**, and **py-clash-bot**.
+The public shape contract for the **Clash Net Protocol (CNP)**.
 
-This repository defines the messages and domain types that a local bot, a private
-inference service, and a third-party model can all speak. It is a **shape library**, not
-an inference runtime: no transport, no models, no auth, no game logic.
+This repository defines the messages and domain types that a local bot, a remote
+server, and a third-party model can all speak. It is a **shape library**, not an
+inference runtime: no transport, no models, no auth, no game logic.
 
 - Normative contract: [CONTRACT.md](CONTRACT.md)
 - Protocol name: **Clash Net Protocol (CNP)**
@@ -16,7 +16,7 @@ an inference runtime: no transport, no models, no auth, no game logic.
 
 `0.1.0` is the first shape-only release. It contains JSON Schema, Python types,
 `Vision`/`Policy` Protocols, a fixture vocabulary, and a conformance CLI. Bindings and
-adapters land in consumer repositories (`royalestrat`, `py-clash-bot`).
+adapters land in consumer repositories (`py-clash-bot` and others).
 
 ## Install
 

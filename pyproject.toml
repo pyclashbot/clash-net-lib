@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "clash-net-lib"
 version = "0.1.0"
-description = "The shared public shape contract for Clash Net, FightVision, and py-clash-bot"
+description = "The public shape contract for the Clash Net Protocol (CNP)"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"

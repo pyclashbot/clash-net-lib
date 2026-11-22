@@ -11,7 +11,7 @@ This document is normative for `clash-net-lib` `0.1.x` and state schema `1.1`.
 CNP is the public shape shared by:
 
 - a local bot (`py-clash-bot`) that captures frames and executes actions;
-- a private inference service (`royalestrat` / FightVision) that produces state and plays;
+- a remote server that produces state and plays;
 - any third-party model that wants to plug in behind a `Policy` or `Vision` adapter.
 
 The contract is **model-agnostic**. A model's featurizer, weights, thresholds, and
@@ -93,7 +93,7 @@ enforcement, model loading, training data formats.
     "state_schema": "1.1",
     "frame": { "formats": ["jpeg", "webp", "png"], "max_bytes": 32768 },
     "max_hz": 3,
-    "models": [{ "id": "playmaker", "version": "2026-07", "featurizer": "pm-1" }],
+    "models": [{ "id": "policy", "version": "2026-07", "featurizer": "fixture-1" }],
     "retention": { "requires_consent": true }
   }
 }
@@ -110,7 +110,7 @@ enforcement, model loading, training data formats.
   "seq": 42,
   "play": { /* §7 */ },
   "playable": [0, 1, 3],
-  "model": { "id": "playmaker", "version": "2026-07" },
+  "model": { "id": "policy", "version": "2026-07" },
   "timings": { "server_ms": 410 }
 }
 ```
@@ -127,12 +127,12 @@ authoritative for deployability; clients SHOULD still re-check before clicking.
 `consent.training` is a boolean on `frame` messages. The library only defines the field;
 enforcement lives in the server.
 
-Hosted API policy for `0.1.0`:
+Server policy for `0.1.0`:
 
-- The hosted service **requires** an explicit `consent` object on frames.
+- A server MAY require an explicit `consent` object on frames.
 - `training: true` permits retention for the training flywheel.
 - `training: false` means do not retain the frame.
-- Frames without a `consent` object are rejected by the hosted API.
+- Servers that require consent reject frames without it.
 - Local bindings and local models may omit `consent` entirely.
 
 Servers advertise this with `capabilities.retention.requires_consent`.
@@ -195,7 +195,8 @@ Rules:
 - `towers` always has the six named keys. Missing observation is `status: "unknown"`.
 - `class` and `card` are strings. Unknown values pass through; clients must not fail.
 - `center_norm`, `cell`, `summary`, `derived`, `vocab`, and `timings` are optional
-  conveniences. `derived.advantage` is public shape; its formula is private.
+  conveniences. `derived.advantage` is public shape; the formula behind it stays in the
+  model.
 - Coordinates: `bbox`/`center` are pixels in the declared `image_size`. `center_norm` is
   over `arena.rect_px` when present, else the full image.
 
@@ -204,12 +205,12 @@ Rules:
 ```jsonc
 { "type": "deploy", "slot": 2, "card": "Hog Rider",
   "xy_px": [212, 410], "xy_norm": [0.51, 0.59], "cell": 87,
-  "game_s": 118.4, "source": "cloud-playmaker",
-  "model": { "id": "playmaker", "version": "2026-07" }, "confidence": 0.42 }
+  "game_s": 118.4, "source": "remote-policy",
+  "model": { "id": "policy", "version": "2026-07" }, "confidence": 0.42 }
 ```
 
 ```jsonc
-{ "type": "none", "game_s": 119.0, "source": "cloud-playmaker" }
+{ "type": "none", "game_s": 119.0, "source": "remote-policy" }
 ```
 
 ```jsonc
@@ -225,7 +226,7 @@ Rules:
 - `deploy` requires `slot` and `xy_norm`; `xy_px` and `cell` are optional.
 - `ability` may carry `card` and a coordinate; otherwise it is a button press.
 - `game_s` is the fight clock at the decision. `source` records provenance
-  (`local-heuristic`, `cloud-playmaker`, `hf-policy`, `human`, ...).
+  (`local-heuristic`, `remote-policy`, `hf-policy`, `human`, ...).
 - `playable` (envelope) is authoritative for which slots can deploy.
 
 ## 8. Adapter Protocols
@@ -244,9 +245,9 @@ class Policy(Protocol):
     def act(self, state: State, playable: list[int] | None = None) -> Action: ...
 ```
 
-Model-specific featurizers live behind `Policy`. A public model (for example a
-behavior-cloning policy) plugs in by mapping `State` to its own features and mapping its
-output to an `Action`; no fork of the model belongs in the bot.
+Model-specific featurizers live behind `Policy`. A model plugs in by mapping `State` to
+its own features and mapping its output to an `Action`; no fork of the model belongs in
+the bot.
 
 ## 9. Defaulting and failure behavior
 
@@ -293,6 +294,6 @@ Not in this release; each is additive or a separate binding:
 - auth and key minting;
 - full card/unit vocabulary artifact (fixture-only baseline today);
 - retention enforcement and deletion;
-- model registry and champion pointer;
+- model registry;
 - replay/offline batch profile;
 - importer from `pcb-pack/v1` recordings.
