@@ -23,7 +23,7 @@ repository = "https://github.com/pyclashbot/clash-net-lib"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-numpy = "^1"
+numpy = ">=1,<3"
 
 
 [tool.poetry.group.dev]
