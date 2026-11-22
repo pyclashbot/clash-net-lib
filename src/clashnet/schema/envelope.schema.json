@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:clashnet:envelope",
+  "title": "Clash Net Envelope",
+  "description": "Client and server messages. The transport is a binding detail; this schema is the shape.",
+  "oneOf": [
+    { "$ref": "#/$defs/frame" },
+    { "$ref": "#/$defs/hello" },
+    { "$ref": "#/$defs/bye" },
+    { "$ref": "#/$defs/state_message" },
+    { "$ref": "#/$defs/play_message" },
+    { "$ref": "#/$defs/error_message" },
+    { "$ref": "#/$defs/hello_ack" }
+  ],
+  "$defs": {
+    "base": {
+      "type": "object",
+      "required": ["v", "type"],
+      "properties": {
+        "v": { "const": "0.1" },
+        "type": { "type": "string" },
+        "session_id": { "type": "string", "minLength": 1 }
+      }
+    },
+    "frame": {
+      "$ref": "#/$defs/base",
+      "required": ["v", "type", "session_id", "seq"],
+      "properties": {
+        "type": { "const": "frame" },
+        "seq": { "type": "integer", "minimum": 0 },
+        "frame_ts": { "type": "integer", "minimum": 0 },
+        "fight_id": { "type": ["string", "null"] },
+        "image": { "$ref": "#/$defs/image" },
+        "want": {
+          "type": "array",
+          "items": { "enum": ["state", "play"] },
+          "uniqueItems": true
+        },
+        "consent": { "$ref": "#/$defs/consent" },
+        "client": { "$ref": "#/$defs/client" }
+      }
+    },
+    "hello": {
+      "$ref": "#/$defs/base",
+      "required": ["v", "type", "session_id"],
+      "properties": {
+        "type": { "const": "hello" },
+        "client": { "$ref": "#/$defs/client" }
+      }
+    },
+    "bye": {
+      "$ref": "#/$defs/base",
+      "required": ["v", "type", "session_id"],
+      "properties": { "type": { "const": "bye" } }
+    },
+    "state_message": {
+      "$ref": "#/$defs/base",
+      "required": ["v", "type", "seq", "state"],
+      "properties": {
+        "type": { "const": "state" },
+        "seq": { "type": "integer", "minimum": 0 },
+        "state": { "$ref": "urn:clashnet:state" },
+        "timings": { "type": "object" }
+      }
+    },
+    "play_message": {
+      "$ref": "#/$defs/base",
+      "required": ["v", "type", "seq", "play"],
+      "properties": {
+        "type": { "const": "play" },
+        "seq": { "type": "integer", "minimum": 0 },
+        "play": {
+          "oneOf": [{ "$ref": "urn:clashnet:action" }, { "type": "null" }]
+        },
+        "playable": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0, "maximum": 3 },
+          "uniqueItems": true
+        },
+        "model": { "$ref": "#/$defs/model" },
+        "timings": { "type": "object" }
+      }
+    },
+    "error_message": {
+      "$ref": "#/$defs/base",
+      "required": ["v", "type", "error"],
+      "properties": {
+        "type": { "const": "error" },
+        "seq": { "type": "integer", "minimum": 0 },
+        "error": { "$ref": "#/$defs/error" }
+      }
+    },
+    "hello_ack": {
+      "$ref": "#/$defs/base",
+      "required": ["v", "type", "capabilities"],
+      "properties": {
+        "type": { "const": "hello_ack" },
+        "capabilities": { "$ref": "urn:clashnet:capabilities" }
+      }
+    },
+    "image": {
+      "type": "object",
+      "required": ["format", "w", "h"],
+      "properties": {
+        "format": { "enum": ["jpeg", "webp", "png"] },
+        "w": { "type": "integer", "minimum": 1 },
+        "h": { "type": "integer", "minimum": 1 },
+        "b64": { "type": "string" }
+      }
+    },
+    "consent": {
+      "type": "object",
+      "required": ["training"],
+      "properties": { "training": { "type": "boolean" } }
+    },
+    "client": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" }
+      }
+    },
+    "model": {
+      "type": "object",
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "type": "string" },
+        "version": { "type": "string" },
+        "featurizer": { "type": "string" }
+      }
+    },
+    "error": {
+      "type": "object",
+      "required": ["code", "message"],
+      "properties": {
+        "code": { "type": "string" },
+        "message": { "type": "string" }
+      }
+    }
+  }
+}

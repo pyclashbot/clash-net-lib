@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:clashnet:capabilities",
+  "title": "Clash Net Capabilities",
+  "description": "Server capabilities returned by hello_ack. Clients should branch on this instead of assuming a model or transport.",
+  "type": "object",
+  "required": ["vision", "play", "actions", "state_schema"],
+  "properties": {
+    "vision": { "type": "boolean" },
+    "play": { "type": "boolean" },
+    "actions": {
+      "type": "array",
+      "items": { "enum": ["deploy", "none", "ability"] },
+      "uniqueItems": true
+    },
+    "state_schema": { "type": "string" },
+    "frame": {
+      "type": "object",
+      "properties": {
+        "formats": {
+          "type": "array",
+          "items": { "enum": ["jpeg", "webp", "png"] },
+          "uniqueItems": true
+        },
+        "max_bytes": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "max_hz": { "type": "number", "exclusiveMinimum": 0 },
+    "models": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/model" }
+    },
+    "retention": {
+      "type": "object",
+      "properties": {
+        "requires_consent": { "type": "boolean" }
+      }
+    }
+  },
+  "$defs": {
+    "model": {
+      "type": "object",
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "type": "string" },
+        "version": { "type": "string" },
+        "featurizer": { "type": "string" }
+      }
+    }
+  }
+}
