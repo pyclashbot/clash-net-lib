@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:clashnet:action",
+  "title": "Clash Net Action",
+  "description": "A deploy, an explicit none, or an ability trigger. Slot indices are 0-based.",
+  "oneOf": [
+    { "$ref": "#/$defs/deploy" },
+    { "$ref": "#/$defs/none" },
+    { "$ref": "#/$defs/ability" }
+  ],
+  "$defs": {
+    "model": {
+      "type": "object",
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "type": "string" },
+        "version": { "type": "string" },
+        "featurizer": { "type": "string" }
+      }
+    },
+    "base": {
+      "type": "object",
+      "required": ["type", "game_s", "source"],
+      "properties": {
+        "type": { "type": "string" },
+        "card": { "type": ["string", "null"] },
+        "slot": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "xy_px": {
+          "type": "array",
+          "prefixItems": [{ "type": "integer" }, { "type": "integer" }],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "xy_norm": {
+          "type": "array",
+          "prefixItems": [
+            { "type": "number", "minimum": 0, "maximum": 1 },
+            { "type": "number", "minimum": 0, "maximum": 1 }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "cell": { "type": "integer", "minimum": 0, "maximum": 153 },
+        "game_s": { "type": "number", "minimum": 0 },
+        "source": { "type": "string", "minLength": 1 },
+        "model": { "$ref": "#/$defs/model" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "deploy": {
+      "$ref": "#/$defs/base",
+      "required": ["type", "slot", "xy_norm"],
+      "properties": { "type": { "const": "deploy" } }
+    },
+    "none": {
+      "$ref": "#/$defs/base",
+      "required": ["type"],
+      "properties": {
+        "type": { "const": "none" },
+        "slot": false,
+        "xy_px": false,
+        "xy_norm": false,
+        "cell": false
+      }
+    },
+    "ability": {
+      "$ref": "#/$defs/base",
+      "required": ["type"],
+      "properties": { "type": { "const": "ability" } }
+    }
+  }
+}

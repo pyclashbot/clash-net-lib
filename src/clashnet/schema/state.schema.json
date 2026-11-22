@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:clashnet:state",
+  "title": "Clash Net State",
+  "description": "Vision output for one frame. Required keys are always present; unknown observations are explicit null or unknown.",
+  "type": "object",
+  "required": ["schema_version", "in_fight", "image_size", "units", "hand_cards", "towers"],
+  "properties": {
+    "schema_version": { "const": "1.1" },
+    "in_fight": { "type": "boolean" },
+    "image_size": { "$ref": "#/$defs/size" },
+    "arena": { "$ref": "#/$defs/arena" },
+    "units": { "type": "array", "items": { "$ref": "#/$defs/unit" } },
+    "hand_cards": {
+      "type": "array",
+      "maxItems": 4,
+      "items": { "$ref": "#/$defs/hand_card" }
+    },
+    "elixir": { "type": ["number", "null"], "minimum": 0, "maximum": 10 },
+    "timer": { "oneOf": [{ "$ref": "#/$defs/timer" }, { "type": "null" }] },
+    "towers": { "$ref": "#/$defs/towers" },
+    "summary": { "$ref": "#/$defs/summary" },
+    "derived": { "$ref": "#/$defs/derived" },
+    "vocab": { "$ref": "#/$defs/vocab" },
+    "timings": { "type": "object" }
+  },
+  "$defs": {
+    "size": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "integer", "minimum": 1 },
+        { "type": "integer", "minimum": 1 }
+      ],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "arena": {
+      "type": "object",
+      "required": ["rect_px"],
+      "properties": {
+        "rect_px": {
+          "type": "array",
+          "prefixItems": [
+            { "type": "integer" },
+            { "type": "integer" },
+            { "type": "integer" },
+            { "type": "integer" }
+          ],
+          "minItems": 4,
+          "maxItems": 4
+        }
+      }
+    },
+    "unit": {
+      "type": "object",
+      "required": ["bbox", "class", "side"],
+      "properties": {
+        "bbox": {
+          "type": "array",
+          "prefixItems": [
+            { "type": "integer" },
+            { "type": "integer" },
+            { "type": "integer" },
+            { "type": "integer" }
+          ],
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "center": {
+          "type": "array",
+          "prefixItems": [{ "type": "integer" }, { "type": "integer" }],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "center_norm": {
+          "type": "array",
+          "prefixItems": [
+            { "type": "number", "minimum": 0, "maximum": 1 },
+            { "type": "number", "minimum": 0, "maximum": 1 }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "cell": { "type": "integer", "minimum": 0, "maximum": 153 },
+        "class": { "type": "string", "minLength": 1 },
+        "class_conf": { "type": "number", "minimum": 0, "maximum": 1 },
+        "side": { "enum": ["friendly", "enemy", "unknown"] },
+        "side_conf": { "type": "number", "minimum": 0, "maximum": 1 },
+        "detection_conf": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "hand_card": {
+      "type": "object",
+      "required": ["slot", "card"],
+      "properties": {
+        "slot": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "card": { "type": "string", "minLength": 1 },
+        "conf": { "type": "number", "minimum": 0, "maximum": 1 },
+        "empty": { "type": "boolean" },
+        "affordable": { "type": ["boolean", "null"] }
+      }
+    },
+    "timer": {
+      "type": "object",
+      "required": ["seconds_remaining", "overtime", "phase"],
+      "properties": {
+        "seconds_remaining": { "type": ["integer", "null"], "minimum": 0 },
+        "mmss": { "type": ["string", "null"] },
+        "overtime": { "type": "boolean" },
+        "phase": { "enum": ["regular", "overtime", "sudden_death", "unknown"] }
+      }
+    },
+    "tower": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": { "enum": ["destroyed", "middle", "full", "unknown"] },
+        "health_percent": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+        "conf": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "alive": { "type": ["boolean", "null"] }
+      }
+    },
+    "towers": {
+      "type": "object",
+      "required": [
+        "enemy_left",
+        "enemy_right",
+        "enemy_main",
+        "friendly_left",
+        "friendly_right",
+        "friendly_main"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "enemy_left": { "$ref": "#/$defs/tower" },
+        "enemy_right": { "$ref": "#/$defs/tower" },
+        "enemy_main": { "$ref": "#/$defs/tower" },
+        "friendly_left": { "$ref": "#/$defs/tower" },
+        "friendly_right": { "$ref": "#/$defs/tower" },
+        "friendly_main": { "$ref": "#/$defs/tower" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "unit_count": { "type": "integer", "minimum": 0 },
+        "friendly_units": { "type": "integer", "minimum": 0 },
+        "enemy_units": { "type": "integer", "minimum": 0 },
+        "raw_detections": { "type": "integer", "minimum": 0 },
+        "tower_filtered": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "derived": {
+      "type": "object",
+      "properties": {
+        "advantage": { "type": ["number", "null"], "minimum": -1, "maximum": 1 },
+        "terminal": { "type": ["boolean", "null"] },
+        "winner": { "enum": ["friendly", "enemy", "draw", null] }
+      }
+    },
+    "vocab": {
+      "type": "object",
+      "required": ["version", "hash"],
+      "properties": {
+        "version": { "type": "string" },
+        "hash": { "type": "string" }
+      }
+    }
+  }
+}

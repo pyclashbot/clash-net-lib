@@ -1,0 +1,12 @@
+{
+  "vision": true,
+  "play": true,
+  "actions": ["deploy", "none", "ability"],
+  "state_schema": "1.1",
+  "frame": { "formats": ["jpeg", "webp", "png"], "max_bytes": 32768 },
+  "max_hz": 3,
+  "models": [
+    { "id": "policy", "version": "2026-07", "featurizer": "fixture-1" }
+  ],
+  "retention": { "requires_consent": true }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "deploy",
+  "slot": 2,
+  "card": "Hog Rider",
+  "xy_px": [212, 410],
+  "xy_norm": [0.51, 0.59],
+  "cell": 87,
+  "game_s": 118.4,
+  "source": "remote-policy",
+  "model": { "id": "policy", "version": "2026-07", "featurizer": "fixture-1" },
+  "confidence": 0.42
+}
