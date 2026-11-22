@@ -1,50 +1,50 @@
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
 
-
-[tool.poetry]
+[project]
 name = "clash-net-lib"
-packages = [{ include = "clashnetlib" }]
-version = "v0.0.0"
-description = "The API for Clash Net"
+version = "0.1.0"
+description = "The shared public shape contract for Clash Net, FightVision, and py-clash-bot"
 readme = "README.md"
-authors = ["Martin Miglio <martin@pyclashbot.app>"]
-license = "MIT"
+license = { text = "MIT" }
+requires-python = ">=3.12"
+authors = [{ name = "Martin Miglio", email = "martin@pyclashbot.app" }]
+keywords = ["clash-royale", "contract", "protocol", "inference"]
 classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
-  "Programming Language :: Python",
   "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-keywords = []
-repository = "https://github.com/pyclashbot/clash-net-lib"
+dependencies = []
 
+[project.optional-dependencies]
+validate = ["jsonschema>=4.23"]
+test = ["pytest>=8.3", "jsonschema>=4.23", "ruff>=0.6"]
 
-[tool.poetry.dependencies]
-python = "^3.12"
-numpy = "^1"
+[project.scripts]
+clashnet-conformance = "clashnet.conformance:main"
 
+[project.urls]
+Homepage = "https://github.com/pyclashbot/clash-net-lib"
+Source = "https://github.com/pyclashbot/clash-net-lib"
 
-[tool.poetry.group.dev]
-optional = true
+[tool.hatch.build.targets.wheel]
+packages = ["src/clashnet"]
 
+[tool.hatch.build.targets.sdist]
+include = ["/src", "/tests", "/CONTRACT.md", "/README.md", "/LICENSE"]
 
-[tool.poetry.group.dev.dependencies]
-ruff = ">=0.6.5,<0.9.0"
-
-
-[tool.poetry.group.build]
-optional = true
-
-
-[tool.poetry.group.build.dependencies]
-twine = ">=5,<7"
-
-
-[tool.ruff.lint]
-select = ["ALL"]
-
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
 
 [tool.ruff]
-line-length = 120
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
