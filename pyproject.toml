@@ -23,7 +23,7 @@ dependencies = []
 
 [project.optional-dependencies]
 validate = ["jsonschema>=4.23"]
-test = ["pytest>=8.3", "jsonschema>=4.23", "ruff>=0.6"]
+test = ["pytest>=8.3", "jsonschema>=4.23", "ruff>=0.17.5"]
 
 [project.scripts]
 clashnet-conformance = "clashnet.conformance:main"
