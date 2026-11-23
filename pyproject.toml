@@ -24,7 +24,7 @@ dependencies = []
 [project.optional-dependencies]
 client = ["websockets>=13,<16"]
 validate = ["jsonschema>=4.23"]
-test = ["pytest>=8.3", "jsonschema>=4.23", "ruff>=0.6", "websockets>=13,<16"]
+test = ["pytest>=9.2.0", "jsonschema>=4.23", "ruff>=0.6", "websockets>=13,<16"]
 
 [project.scripts]
 clashnet-conformance = "clashnet.conformance:main"
