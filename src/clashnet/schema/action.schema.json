@@ -26,12 +26,14 @@
         "card": { "type": ["string", "null"] },
         "slot": { "type": "integer", "minimum": 0, "maximum": 3 },
         "xy_px": {
+          "description": "Absolute pixel in image_size (419x633 for the bot); clients clamp before clicking.",
           "type": "array",
           "prefixItems": [{ "type": "integer" }, { "type": "integer" }],
           "minItems": 2,
           "maxItems": 2
         },
         "xy_norm": {
+          "description": "Normalized to arena.rect_px when present, else image_size; within 1 px of xy_px.",
           "type": "array",
           "prefixItems": [
             { "type": "number", "minimum": 0, "maximum": 1 },

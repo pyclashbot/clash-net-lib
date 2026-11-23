@@ -9,7 +9,7 @@ inference runtime: no transport, no models, no auth, no game logic.
 - Normative contract: [CONTRACT.md](CONTRACT.md)
 - Protocol name: **Clash Net Protocol (CNP)**
 - Version: `0.2.0`
-- State schema: `1.1`
+- State schema: `1.2`
 - License: MIT
 
 ## Status
