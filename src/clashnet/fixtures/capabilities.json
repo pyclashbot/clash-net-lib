@@ -2,7 +2,7 @@
   "vision": true,
   "play": true,
   "actions": ["deploy", "none", "ability"],
-  "state_schema": "1.1",
+  "state_schema": "1.2",
   "frame": { "formats": ["jpeg", "webp", "png"], "max_bytes": 32768 },
   "max_hz": 3,
   "models": [

@@ -15,7 +15,12 @@ ImageFormat = Literal["jpeg", "webp", "png"]
 
 
 class Arena(TypedDict):
-    """Pixel rectangle that defines the normalized coordinate frame."""
+    """Pixel rectangle [x0, y0, x1, y1] in the state image (419x633 for the bot).
+
+    ``center_norm``/``xy_norm`` normalize over this rect; ``xy_px`` stays absolute
+    in ``image_size``. Converting between them lands within 1 px; clients clamp
+    before clicking.
+    """
 
     rect_px: tuple[int, int, int, int]
 

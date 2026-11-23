@@ -31,7 +31,7 @@ CAPABILITIES = {
     "vision": True,
     "play": True,
     "actions": ["deploy", "none", "ability"],
-    "state_schema": "1.1",
+    "state_schema": "1.2",
     "retention": {"requires_consent": True},
 }
 
@@ -39,13 +39,13 @@ PLAY = {
     "type": "deploy",
     "slot": 0,
     "xy_norm": [0.5, 0.5],
-    "xy_px": [210, 410],
+    "xy_px": [208, 267],
     "game_s": 1.0,
     "source": "test",
 }
 
 STATE = {
-    "schema_version": "1.1",
+    "schema_version": "1.2",
     "in_fight": True,
     "image_size": [419, 633],
     "units": [],
@@ -69,9 +69,7 @@ def responder(message: dict[str, Any]) -> list[dict[str, Any]]:
     responses = []
     want = message.get("want", [])
     if "state" in want:
-        responses.append(
-            {"v": "0.1", "type": "state", "seq": message["seq"], "state": STATE}
-        )
+        responses.append({"v": "0.1", "type": "state", "seq": message["seq"], "state": STATE})
     if "play" in want:
         responses.append(
             {
@@ -176,7 +174,7 @@ def test_client_infer() -> None:
         with Client(url) as client:
             message = client.infer(b"jpeg", w=419, h=633)
             assert message["type"] == "state"
-            assert message["state"]["schema_version"] == "1.1"
+            assert message["state"]["schema_version"] == "1.2"
         frame = [item for item in received if item["type"] == "frame"][-1]
         assert frame["want"] == ["state"]
         assert "consent" not in frame

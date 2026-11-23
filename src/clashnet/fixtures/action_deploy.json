@@ -3,7 +3,7 @@
   "slot": 2,
   "card": "Hog Rider",
   "xy_px": [212, 410],
-  "xy_norm": [0.51, 0.59],
+  "xy_norm": [0.51, 0.84],
   "cell": 87,
   "game_s": 118.4,
   "source": "remote-policy",

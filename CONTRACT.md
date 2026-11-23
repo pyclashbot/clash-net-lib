@@ -1,10 +1,10 @@
 # Clash Net Protocol (CNP) — v0.1
 
-Status: **draft for the first shape-only release.** `0.1.0` defines the envelope, state,
+Status: **draft for the first shape-only release.** `0.2.0` defines the envelope, state,
 action, capability handshake, adapter Protocols, and conformance fixtures. It does not
 define a transport, auth, or any model.
 
-This document is normative for `clash-net-lib` `0.1.x` and `0.2.x` and state schema `1.1`.
+This document is normative for `clash-net-lib` `0.2.x` and state schema `1.2`.
 
 ## 1. Scope
 
@@ -35,8 +35,8 @@ reference binding (`clashnet.client`); the core stays transport-free.
 ## 3. Versioning
 
 - `v` is the protocol version (`"0.1"`).
-- `schema_version` is the state schema version (`"1.1"`).
-- `CONTRACT_VERSION` (`0.1.0`) is the package/spec version.
+- `schema_version` is the state schema version (`"1.2"`).
+- `CONTRACT_VERSION` (`0.2.0`) is the package/spec version.
 - Additive fields and enum values may appear in a minor release. Clients MUST ignore
   unknown fields and unknown enum values they do not understand.
 - Removals, renames, and semantic changes bump the major.
@@ -91,7 +91,7 @@ reference binding (`clashnet.client`); the core stays transport-free.
     "vision": true,
     "play": true,
     "actions": ["deploy", "none", "ability"],
-    "state_schema": "1.1",
+    "state_schema": "1.2",
     "frame": { "formats": ["jpeg", "webp", "png"], "max_bytes": 32768 },
     "max_hz": 3,
     "models": [{ "id": "policy", "version": "2026-07", "featurizer": "fixture-1" }],
@@ -142,7 +142,7 @@ authoritative for deployability; clients SHOULD still re-check before clicking.
 `consent.training` is a boolean on `frame` messages. The library only defines the field;
 enforcement lives in the server.
 
-Server policy for `0.1.0`:
+Server policy for `0.2.0`:
 
 - A server MAY require an explicit `consent` object on frames.
 - `training: true` permits retention for the training flywheel.
@@ -154,15 +154,15 @@ Servers advertise this with `capabilities.retention.requires_consent`.
 
 ## 6. State
 
-State schema `1.1`. Required skeleton: `schema_version`, `in_fight`, `image_size`,
+State schema `1.2`. Required skeleton: `schema_version`, `in_fight`, `image_size`,
 `units`, `hand_cards`, `towers`. Everything else is optional.
 
 ```jsonc
 {
-  "schema_version": "1.1",
+  "schema_version": "1.2",
   "in_fight": true,
   "image_size": [419, 633],
-  "arena": { "rect_px": [52, 57, 367, 476] },
+  "arena": { "rect_px": [50, 57, 367, 477] },
   "units": [
     {
       "bbox": [136, 397, 182, 448],
@@ -212,14 +212,16 @@ Rules:
 - `center_norm`, `cell`, `summary`, `derived`, `vocab`, and `timings` are optional
   conveniences. `derived.advantage` is public shape; the formula behind it stays in the
   model.
-- Coordinates: `bbox`/`center` are pixels in the declared `image_size`. `center_norm` is
-  over `arena.rect_px` when present, else the full image.
+- Coordinates: `bbox`/`center`/`xy_px` are absolute pixels in the declared
+  `image_size` (419x633 for the bot). `center_norm`/`xy_norm` normalize over
+  `arena.rect_px` when present, else the full image; converting back lands within
+  1 px. Clients clamp to the playable region before clicking.
 
 ## 7. Action
 
 ```jsonc
 { "type": "deploy", "slot": 2, "card": "Hog Rider",
-  "xy_px": [212, 410], "xy_norm": [0.51, 0.59], "cell": 87,
+  "xy_px": [212, 410], "xy_norm": [0.51, 0.84], "cell": 87,
   "game_s": 118.4, "source": "remote-policy",
   "model": { "id": "policy", "version": "2026-07" }, "confidence": 0.42 }
 ```
@@ -238,7 +240,8 @@ Rules:
 - `type` is `deploy`, `none`, or `ability`.
 - `none` is an explicit decision, not an absent reply. It carries no `slot` or
   coordinates.
-- `deploy` requires `slot` and `xy_norm`; `xy_px` and `cell` are optional.
+- `deploy` requires `slot` and `xy_norm`; `xy_px` and `cell` are optional. When both
+  coordinate forms are present they must describe the same point within 1 px.
 - `ability` may carry `card` and a coordinate; otherwise it is a button press.
 - `game_s` is the fight clock at the decision. `source` records provenance
   (`local-heuristic`, `remote-policy`, `hf-policy`, `human`, ...).
@@ -250,11 +253,14 @@ Rules:
 class Vision(Protocol):
     id: str
     version: str
+
     def analyze(self, frame: bytes, meta: dict) -> State: ...
+
 
 class Policy(Protocol):
     id: str
     version: str
+
     def reset(self, session_id: str, deck: list[str] | None = None) -> None: ...
     def observe(self, state: State) -> None: ...
     def act(self, state: State, playable: list[int] | None = None) -> Action: ...
@@ -299,9 +305,9 @@ array input and a pixel-only `FightDecisionValue`. It is superseded. This releas
 - replaces `clashnetlib` with `clashnet`;
 - drops the numpy dependency and ABC inheritance;
 - adds JSON Schema, versioning, `seq`, state, capabilities, consent, and conformance;
-- normalizes hand slots to 0-3 and coordinates to `xy_norm` + `xy_px`.
+- normalizes hand slots to 0-3; `xy_norm` over the arena rect and `xy_px` in image pixels.
 
-## 12. Post-0.1 items
+## 12. Post-0.2 items
 
 Not in this release; each is additive or a separate binding:
 

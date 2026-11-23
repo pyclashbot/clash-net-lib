@@ -6,7 +6,7 @@
   "type": "object",
   "required": ["schema_version", "in_fight", "image_size", "units", "hand_cards", "towers"],
   "properties": {
-    "schema_version": { "const": "1.1" },
+    "schema_version": { "const": "1.2" },
     "in_fight": { "type": "boolean" },
     "image_size": { "$ref": "#/$defs/size" },
     "arena": { "$ref": "#/$defs/arena" },
@@ -39,6 +39,8 @@
       "required": ["rect_px"],
       "properties": {
         "rect_px": {
+          "description": "Arena rect [x0, y0, x1, y1] in image pixels; normalized coordinates use this frame.",
+          "default": [50, 57, 367, 477],
           "type": "array",
           "prefixItems": [
             { "type": "integer" },
@@ -73,6 +75,7 @@
           "maxItems": 2
         },
         "center_norm": {
+          "description": "Normalized to arena.rect_px when present, else image_size; within 1 px of center.",
           "type": "array",
           "prefixItems": [
             { "type": "number", "minimum": 0, "maximum": 1 },
