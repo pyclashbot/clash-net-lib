@@ -4,7 +4,7 @@ Status: **draft for the first shape-only release.** `0.1.0` defines the envelope
 action, capability handshake, adapter Protocols, and conformance fixtures. It does not
 define a transport, auth, or any model.
 
-This document is normative for `clash-net-lib` `0.1.x` and state schema `1.1`.
+This document is normative for `clash-net-lib` `0.1.x` and `0.2.x` and state schema `1.1`.
 
 ## 1. Scope
 
@@ -18,8 +18,9 @@ The contract is **model-agnostic**. A model's featurizer, weights, thresholds, a
 business logic stay behind its adapter. Only `State` and `Action` cross a repo or network
 boundary.
 
-Not in scope for `0.1.0`: transport bindings, authentication, rate limits, retention
-enforcement, model loading, training data formats.
+Not in scope for the core shape: transport bindings, authentication, rate limits,
+retention enforcement, model loading, training data formats. `0.2.0` adds one optional
+reference binding (`clashnet.client`); the core stays transport-free.
 
 ## 2. Terms
 
@@ -121,6 +122,20 @@ enforcement, model loading, training data formats.
 
 `play` may be `null` when the server has no play for that frame. `playable` is
 authoritative for deployability; clients SHOULD still re-check before clicking.
+
+### 4.3 Reference WebSocket binding (`0.2.0`)
+
+`clash-net-lib[client]` ships `clashnet.client.Client`:
+
+- WebSocket; one JSON text message per frame; images are base64.
+- `hello` -> `hello_ack` is required before frames; the response carries capabilities.
+- Text messages larger than 30 KB are fragmented.
+- Responses correlate by `seq`; clients drop stale plays.
+- Reconnect with backoff and a fresh `hello`.
+- `consent.training` is sent on every frame when configured.
+- `send_frame()` is non-blocking; `poll()` / `drain()` receive; `request()` / `infer()` /
+  `decide()` are blocking conveniences.
+- The core package never imports `websockets`; it is only in the `[client]` extra.
 
 ## 5. Consent and retention
 
@@ -290,7 +305,7 @@ array input and a pixel-only `FightDecisionValue`. It is superseded. This releas
 
 Not in this release; each is additive or a separate binding:
 
-- transport bindings (binary WebSocket, AWS API Gateway);
+- additional transport bindings (binary WebSocket, AWS API Gateway);
 - auth and key minting;
 - full card/unit vocabulary artifact (fixture-only baseline today);
 - retention enforcement and deletion;

@@ -5,7 +5,7 @@ from clashnet.version import CONTRACT_VERSION, PROTOCOL_VERSION, STATE_SCHEMA_VE
 
 
 def test_version_constants() -> None:
-    assert CONTRACT_VERSION == "0.1.0"
+    assert CONTRACT_VERSION == "0.2.0"
     assert PROTOCOL_VERSION == "0.1"
     assert STATE_SCHEMA_VERSION == "1.1"
 
